@@ -1,16 +1,28 @@
-to push the schema to the database
+### 1. Patient
+- **Authentication:**
+  - Register new account
+  - Login to system
+  - Manage personal information
 
-```
-npx prisma db push
-```
+- **Appointment Management:**
+  - Book appointments with therapist
+  - View appointment history
 
-to generate the prisma client
-```
-npx prisma generate
-```
+- **Communication:**
+  - Chat with therapist
 
-to seed the database
+### 2. Therapist
+- **Patient Management:**
+  - View patient list
 
-```
-npm run db:seed
-```
+- **Appointment Handling:**
+  - Manage work schedule
+  - Accept/Reject appointments
+  - Update appointment status
+
+### 3. Admin
+- **Application Management:**
+  - Review therapist applications
+
+- **Reports & Analytics:**
+  - View statistical reports
