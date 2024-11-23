@@ -131,7 +131,7 @@ export function Messages() {
                   <Box sx={{ p: 2, textAlign: 'center' }}>
                     <CircularProgress />
                   </Box>
-                ) : conversations?.length > 0 ? (
+                ) : Array.isArray(conversations) && conversations.length > 0 ? (
                   conversations.map((conversation) => (
                     <ListItem
                       button
