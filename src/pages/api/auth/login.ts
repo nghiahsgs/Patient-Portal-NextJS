@@ -6,6 +6,8 @@ import bcrypt from 'bcryptjs';
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  console.log('Login request received');
+  console.log(req.method);
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' });
   }
