@@ -1,0 +1,99 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  username  String   @unique
+  email     String   @unique
+  password  String
+  name      String
+  role      String   // admin, patient, therapist
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  patientProfile    Patient?
+  therapistProfile  Therapist?
+  sentMessages      Message[]    @relation("sender")
+  receivedMessages  Message[]    @relation("receiver")
+}
+
+model Patient {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId           String   @unique @db.ObjectId
+  user             User     @relation(fields: [userId], references: [id])
+  phoneNumber      String?
+  dateOfBirth      DateTime?
+  address          String?
+  emergencyContact String?
+  medicalHistory   String?
+  appointments     Appointment[]
+}
+
+model Therapist {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String   @unique @db.ObjectId
+  user              User     @relation(fields: [userId], references: [id])
+  licenseNumber     String   @unique
+  languages         String[]
+  about             String?
+  specialization    String
+  yearsOfExperience Int
+  education         String
+  workingHours      WorkingHours?
+  appointments      Appointment[]
+  applicationStatus String // pending, approved, rejected
+}
+
+model WorkingHours {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  therapistId   String    @unique @db.ObjectId
+  therapist     Therapist @relation(fields: [therapistId], references: [id])
+  startDayInWeek String
+  endDayInWeek   String
+  startHour      String
+  endHour        String
+}
+
+model Appointment {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  patientId   String   @db.ObjectId
+  patient     Patient  @relation(fields: [patientId], references: [id])
+  therapistId String   @db.ObjectId
+  therapist   Therapist @relation(fields: [therapistId], references: [id])
+  date        DateTime
+  startTime   DateTime
+  endTime     DateTime
+  status      String   // pending, scheduled, completed, cancelled
+  notes       String?
+  createdAt   DateTime @default(now())
+}
+
+model Message {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  senderId   String   @db.ObjectId
+  sender     User     @relation("sender", fields: [senderId], references: [id])
+  receiverId String   @db.ObjectId
+  receiver   User     @relation("receiver", fields: [receiverId], references: [id])
+  content    String
+  timestamp  DateTime @default(now())
+}
+
+model TherapistApplication {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  email          String
+  username       String
+  phone          String
+  experience     Int
+  specialization String
+  education      String
+  status         String   // pending, approved, rejected
+  submittedAt    DateTime @default(now())
+}
